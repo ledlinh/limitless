@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    android:orientation="vertical"
+    tools:context=".controller.GameActivity">
+
+    <TextView
+        android:id="@+id/questionText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="Question?"
+        android:layout_marginBottom="30dp"
+        android:textAlignment="center"
+        android:layout_gravity="center_horizontal"/>
+
+    <Button
+        android:id="@+id/answer01Btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Answer1"/>
+
+    <Button
+        android:id="@+id/answer02Btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Answer2"/>
+
+    <Button
+        android:id="@+id/answer03Btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Answer3"/>
+
+    <Button
+        android:id="@+id/answer04Btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Answer4"/>
+
+    <TextView
+        android:id="@+id/inputChoicesListTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="10dp"
+        android:text="Your answer:"/>
+
+    <TextView
+        android:id="@+id/inputChoicesList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="10dp"
+        android:text=""/>
+
+    <Button
+        android:id="@+id/clearAnswerBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="10dp"
+        android:text="Clear answer"/>
+
+    <EditText
+        android:id="@+id/answerTextInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp" />
+
+    <Button
+        android:id="@+id/submitInputAnswer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Submit"/>
+
+</LinearLayout>
