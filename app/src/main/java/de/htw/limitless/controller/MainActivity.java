@@ -3,6 +3,7 @@ package de.htw.limitless.controller;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,18 +13,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import de.htw.limitless.R;
-import de.htw.limitless.model.AppExecutors;
 import de.htw.limitless.model.Player;
-import de.htw.limitless.model.PlayerDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView mGreetingText;
     private EditText mNameInput;
     private Button mStartButton;
-    private Player mPlayer;
-    private PlayerDatabase playerDB;
-    private static final int MAIN_ACTIVITY_REQUEST_CODE = 101;
+    private GameLogic game;
+    private SharedPreferences sharedPreferences;
+
+    public static final String SHARED_PREFS = "sharedPrefs";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +33,19 @@ public class MainActivity extends AppCompatActivity {
         mGreetingText = findViewById(R.id.greetingText);
         mNameInput = findViewById(R.id.nameInput);
         mStartButton = findViewById(R.id.startBtn);
+
+        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+
+        if (sharedPreferences.contains("playerName")) {
+            retrievePlayer();
+        } else {
+            setUpNewPlayer();
+        }
+    }
+
+    private void setUpNewPlayer() {
+        mGreetingText.setText("Welcome to Limitless");
+        mNameInput.setVisibility(View.VISIBLE);
 
         mStartButton.setEnabled(false);
 
@@ -57,20 +70,29 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                mPlayer = new Player(mNameInput.getText().toString());
-                playerDB = PlayerDatabase.getInstance(MainActivity.this);
-
-                AppExecutors.getInstance().diskIO().execute(new Runnable() { //Run database on a different thread
-
-                    @Override
-                    public void run() {
-                        playerDB.getPlayerDAO().insert(mPlayer);
-                    }
-                });
-                Intent gameActivity = new Intent(MainActivity.this, GameActivity.class);
-                startActivity(gameActivity);
+                game = GameLogic.getGame(mNameInput.getText().toString(), sharedPreferences);
+                startGameActivity();
             }
         });
     }
 
+    private void retrievePlayer() {
+        mNameInput.setVisibility(View.GONE);
+
+        String playerName = sharedPreferences.getString("playerName", "");
+        game = GameLogic.getGame(playerName, sharedPreferences);
+        mGreetingText.setText("Welcome back to Limitless, " + playerName);
+
+        mStartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startGameActivity();
+            }
+        });
+    }
+
+    private void startGameActivity() {
+        Intent gameActivity = new Intent(MainActivity.this, GameActivity.class);
+        startActivity(gameActivity);
+    }
 }
