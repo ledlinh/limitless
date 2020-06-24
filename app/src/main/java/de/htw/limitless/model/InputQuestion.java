@@ -7,12 +7,18 @@ import java.util.List;
 
 public class InputQuestion implements Question {
 
+    private String id;
     private String mQuestion;
     private String mAnswer;
     private String mHint;
 
-    public InputQuestion(String question) {
+    public InputQuestion(String id, String question) {
+        this.id = id;
         this.mQuestion = question;
+    }
+
+    public String getId() {
+        return this.id;
     }
 
     public void setUp(String answer, String hint) {
@@ -35,7 +41,7 @@ public class InputQuestion implements Question {
         return mHint;
     }
 
-    public boolean checkAnswer(String answer) {
-        return answer.contains(mAnswer);
+    public String getAnswer() {
+        return mAnswer;
     }
 }

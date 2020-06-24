@@ -7,7 +7,7 @@
     android:padding="20dp"
     android:windowSoftInputMode="stateAlwaysHidden"
     android:orientation="vertical"
-    tools:context=".controller.GameActivity">
+    tools:context=".view.GameActivity">
 
     <TextView
         android:id="@+id/questionText"
@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:text="Question?"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="10dp"
         android:textAlignment="center"
         android:layout_gravity="center_horizontal"/>
 
@@ -48,15 +48,6 @@
         android:text="Answer4"/>
 
     <TextView
-        android:id="@+id/inputChoicesListTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="10dp"
-        android:text="Your answer:"/>
-
-    <TextView
         android:id="@+id/inputChoicesList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -67,7 +58,7 @@
 
     <Button
         android:id="@+id/clearAnswerBtn"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:layout_gravity="center_horizontal"
@@ -87,4 +78,66 @@
         android:layout_margin="10dp"
         android:text="Submit"/>
 
+    <TextView
+        android:id="@+id/hint"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:textAlignment="center"
+        android:layout_marginTop="10dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+        <Button
+            android:id="@+id/showHint"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="50dp"
+            android:text="Show hint" />
+
+        <Button
+            android:id="@+id/skipBtn"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:text="Skip"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <TextView
+            android:id="@+id/levelView"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/cookiesView"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:textAlignment="textEnd"/>
+    </LinearLayout>
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+        <TextView
+            android:id="@+id/titleView"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/cupcakesView"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:textAlignment="textEnd"/>
+    </LinearLayout>
 </LinearLayout>

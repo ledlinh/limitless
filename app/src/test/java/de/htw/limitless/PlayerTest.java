@@ -3,7 +3,6 @@ package de.htw.limitless;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.htw.limitless.controller.MainActivity;
 import de.htw.limitless.model.Player;
 
 public class PlayerTest {

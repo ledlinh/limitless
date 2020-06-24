@@ -10,14 +10,17 @@ public class Player {
     private int mQuestionsAnswered;
     private int mCupcakes;
 
+    private Player(String name) {
+        this.mName = name;
+        this.mLevel = 0;
+        this.mCookies = 0;
+        this.mQuestionsAnswered = 0;
+        this.mCupcakes = 0;
+    }
+
     public static Player getPlayer(String name) {
-        if (player == null) {
-            player = new Player();
-            player.mName = name;
-            player.mLevel = 0;
-            player.mCookies = 0;
-            player.mQuestionsAnswered = 0;
-            player.mCupcakes = 0;
+        if (player == null & name != null) {
+            player = new Player(name);
         }
         return player;
     }
@@ -66,6 +69,8 @@ public class Player {
         this.mCookies++;
     }
 
+    public void useCookie() { this.mCookies--; }
+
     public void setCookies(int cookies) {
         this.mCookies = cookies;
     }
@@ -78,8 +83,14 @@ public class Player {
         this.mCupcakes++;
     }
 
+    public void useCupcake() { this.mCupcakes--; }
+
     public void setCupcakes(int cupcakes) {
         this.mCupcakes = cupcakes;
+    }
+
+    public void delete() {
+        player = null;
     }
 
 }

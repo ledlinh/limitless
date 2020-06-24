@@ -3,14 +3,25 @@ package de.htw.limitless.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeviceShakenQuestion implements Question {
+public class DeviceMotionQuestion implements Question {
 
+    private String id;
     private String mQuestion;
     private List<String> mChoicesList = new ArrayList<>();
     private String mHint;
+    private String mAnswer;
 
-    public DeviceShakenQuestion(String question) {
+    private static final String TILTED_ONCE = "tilted once vertically";
+    private static final String TILT_HORIZONTALLY = "tilting horizontally";
+    private static final String ROTATE_180 = "rotated 180 degree";
+
+    public DeviceMotionQuestion(String id, String question) {
+        this.id = id;
         this.mQuestion = question;
+    }
+
+    public String getId() {
+        return this.id;
     }
 
     public void setUp(String choice1, String choice2, String choice3, String choice4, String hint) {
@@ -21,13 +32,25 @@ public class DeviceShakenQuestion implements Question {
         this.mHint = hint;
     }
 
+    public void setTiltingHorizontallyAnswer() {
+        this.mAnswer = TILT_HORIZONTALLY;
+    }
+
+    public void setTiltedOnceAnswer() {
+        this.mAnswer = TILTED_ONCE;
+    }
+
+    public void setRotatedAnswer() {
+        this.mAnswer = ROTATE_180;
+    }
+
     public List<String> getChoicesList() {
         return mChoicesList;
     }
 
     @Override
     public String getQuestionType() {
-        return "shaken";
+        return "motion";
     }
 
     @Override
@@ -40,7 +63,7 @@ public class DeviceShakenQuestion implements Question {
         return mHint;
     }
 
-    public boolean checkAnswer(boolean isShaken) {
-        return isShaken;
+    public String getAnswer() {
+        return mAnswer;
     }
 }

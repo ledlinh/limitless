@@ -1,9 +1,8 @@
-package de.htw.limitless.controller;
+package de.htw.limitless.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,7 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import de.htw.limitless.R;
-import de.htw.limitless.model.Player;
+import de.htw.limitless.controller.GameLogic;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,9 +20,6 @@ public class MainActivity extends AppCompatActivity {
     private EditText mNameInput;
     private Button mStartButton;
     private GameLogic game;
-    private SharedPreferences sharedPreferences;
-
-    public static final String SHARED_PREFS = "sharedPrefs";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,16 +30,15 @@ public class MainActivity extends AppCompatActivity {
         mNameInput = findViewById(R.id.nameInput);
         mStartButton = findViewById(R.id.startBtn);
 
-        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-
-        if (sharedPreferences.contains("playerName")) {
-            retrievePlayer();
+        game = GameLogic.getGame();
+        if (game.started()) {
+            retrieveGame();
         } else {
-            setUpNewPlayer();
+            setUpNewGame();
         }
     }
 
-    private void setUpNewPlayer() {
+    private void setUpNewGame() {
         mGreetingText.setText("Welcome to Limitless");
         mNameInput.setVisibility(View.VISIBLE);
 
@@ -70,18 +65,16 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                game = GameLogic.getGame(mNameInput.getText().toString(), sharedPreferences);
+                game.setUpNewGame(mNameInput.getText().toString());
                 startGameActivity();
             }
         });
     }
 
-    private void retrievePlayer() {
+    private void retrieveGame() {
         mNameInput.setVisibility(View.GONE);
-
-        String playerName = sharedPreferences.getString("playerName", "");
-        game = GameLogic.getGame(playerName, sharedPreferences);
-        mGreetingText.setText("Welcome back to Limitless, " + playerName);
+        game.setUpPreviousGame();
+        mGreetingText.setText("Welcome back to Limitless, " + game.getPlayerName());
 
         mStartButton.setOnClickListener(new View.OnClickListener() {
             @Override

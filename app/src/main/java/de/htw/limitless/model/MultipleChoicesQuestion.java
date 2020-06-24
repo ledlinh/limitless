@@ -6,13 +6,19 @@ import java.util.List;
 
 public class MultipleChoicesQuestion implements Question {
 
+    private String id;
     private String mQuestion;
     private List<String> mChoicesList = new ArrayList<>();
     private List<Integer> mAnswerIndices = new ArrayList<>();
     private String mHint;
 
-    public MultipleChoicesQuestion(String question) {
+    public MultipleChoicesQuestion(String id, String question) {
+        this.id = id;
         this.mQuestion = question;
+    }
+
+    public String getId() {
+        return this.id;
     }
 
     public void setUp(String choice1, String choice2, String choice3, String choice4, String hint) {
@@ -34,6 +40,10 @@ public class MultipleChoicesQuestion implements Question {
         return mChoicesList;
     }
 
+    public List<Integer> getAnswerIndices() {
+        return mAnswerIndices;
+    }
+
     @Override
     public String getQuestionType() {
         return "multiple";
@@ -47,20 +57,5 @@ public class MultipleChoicesQuestion implements Question {
     @Override
     public String getHint() {
         return mHint;
-    }
-
-    public boolean checkAnswer(List<Integer> indices) {
-        boolean result = true;
-        Collections.sort(indices);
-        if ((indices.size() != 0) && (indices.size() == mAnswerIndices.size())) {
-            for (int i = 0; i < indices.size(); i++) {
-                if (indices.get(i) != mAnswerIndices.get(i)) {
-                    result = false;
-                }
-            }
-        } else {
-            result = false;
-        }
-        return result;
     }
 }
