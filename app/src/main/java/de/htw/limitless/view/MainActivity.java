@@ -85,7 +85,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startGameActivity() {
-        Intent gameActivity = new Intent(MainActivity.this, GameActivity.class);
-        startActivity(gameActivity);
+        if (game.canStart()) {
+            Intent gameActivity = new Intent(MainActivity.this, GameActivity.class);
+            startActivity(gameActivity);
+        } else {
+            Intent maintenanceActivity = new Intent(MainActivity.this, MaintenanceActivity.class);
+            startActivity(maintenanceActivity);
+        }
     }
 }

@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import de.htw.limitless.R;
 import de.htw.limitless.controller.GameLogic;
 
@@ -27,7 +25,7 @@ public class GameEndedActivity extends AppCompatActivity {
 
         mLevelView = findViewById(R.id.levelEndedView);
         mTitleView = findViewById(R.id.titleEndedView);
-        mPlayAgainBtn = findViewById(R.id.playAgainBtn);
+        mPlayAgainBtn = findViewById(R.id.playAgainWonBtn);
 
         game = GameLogic.getGame();
         game.setUpPreviousGame();

@@ -1,10 +1,5 @@
 package de.htw.limitless.model;
 
-import android.content.Intent;
-import android.renderscript.ScriptGroup;
-
-import java.util.List;
-
 public class InputQuestion implements Question {
 
     private String id;

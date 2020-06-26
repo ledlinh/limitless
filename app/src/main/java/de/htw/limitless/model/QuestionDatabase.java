@@ -65,6 +65,10 @@ public class QuestionDatabase {
         ((DeviceMotionQuestion) question11).setTiltedOnceAnswer();
         mQuestionList.add(question11);
 
+        Question question12 = new InputQuestion("q12", "Does the red crab or the blue crab always win the race?");
+        ((InputQuestion) question12).setUp("blue", "Can a cooked crab win anything?");
+        mQuestionList.add(question12);
+
         Collections.shuffle(mQuestionList);
     }
 
@@ -72,6 +76,15 @@ public class QuestionDatabase {
         Question question = mQuestionList.get(mNextQuestionIndex);
         mNextQuestionIndex++;
         return question;
+    }
+
+    public void removeCurrentQuestion(Question currentQuestion) {
+        mQuestionList.remove(currentQuestion);
+        mNextQuestionIndex--;
+    }
+
+    public void addQuestion(Question question) {
+        mQuestionList.add(question);
     }
 
     public int getSize() {

@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
 
 import de.htw.limitless.model.DeviceMotionQuestion;
@@ -21,23 +21,30 @@ public class GameLogic {
     private static Player mPlayer;
     private String[] mTitleList = new String[]{"Not There", "Baby", "Smart Kid", "Clever Teenager", "Genius Youngster", "Overachiever", "Scholar", "Pioneer", "Inventor", "Walking Intelligence", "Einstein"};
 
-    private static PreferenceManager preferenceManager;
+    private static final int WIN_LEVEL = 3;
+    private static final int TO_LEVEL_UP = 2;
+    private static final int COOKIE_TO_USE = 1;
+    private static final int COOKIE_TO_ADD = 1;
+    private static final int CUPCAKE_TO_USE = 1;
+    private static final int CUPCAKE_TO_ADD = 1;
 
     private QuestionDatabase mQuestionDatabase = new QuestionDatabase();
     private Question currentQuestion;
-    private List<String> answeredQuestionsList;
+    private HashSet<String> answeredQuestionsList;
 
+    private static PreferenceManager preferenceManager;
     private AchievementListener listener;
-
-    private GameLogic() {
-        preferenceManager = PreferenceManager.getInstance();
-    }
 
     public static GameLogic getGame() {
         if (game == null) {
             game = new GameLogic();
         }
         return game;
+    }
+
+    private GameLogic() {
+        mQuestionDatabase.generateQuestions();
+        preferenceManager = PreferenceManager.getInstance();
     }
 
     public interface AchievementListener {
@@ -53,26 +60,49 @@ public class GameLogic {
         preferenceManager.write("started", true);
         mPlayer = Player.getPlayer(playerName);
         mPlayer.setTitle(mTitleList[mPlayer.getLevel()]);
-        answeredQuestionsList = new ArrayList<>();
+        answeredQuestionsList = new HashSet<>();
         updateSharedPreferences();
     }
 
-    public Boolean started() {
-        boolean started = false;
-        if (preferenceManager.readBoolean("started")) {
-            started = true;
+    public boolean canStart() {
+        int questionsSize = mQuestionDatabase.getSize();
+        int requirement = ((WIN_LEVEL + 1) * TO_LEVEL_UP) + ((WIN_LEVEL + 1) * CUPCAKE_TO_USE);
+        if (questionsSize < requirement) return false;
+        else return true;
+    }
+
+    public void nextQuestion() {
+        currentQuestion = mQuestionDatabase.getNextQuestion();
+        if (answeredQuestionsList.contains(currentQuestion)) {
+            nextQuestion();
         }
-        return started;
+    }
+
+    public Boolean started() {
+        if (preferenceManager.readBoolean("started")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void setUpPreviousGame() {
-        if (started()) {
-            String playerName = preferenceManager.readString("playerName");
-            mPlayer = Player.getPlayer(playerName);
-            updateGame();
-        } else {
-            System.out.println("No game found.");
-        }
+        String playerName = preferenceManager.readString("playerName");
+        mPlayer = Player.getPlayer(playerName);
+        updateGame();
+    }
+
+    private void updateGame() {
+        mPlayer = Player.getPlayer(preferenceManager.readString("playerName"));
+
+        mPlayer.setLevel(preferenceManager.readInt("level"));
+        mPlayer.setTitle(preferenceManager.readString("title"));
+        mPlayer.setCookies(preferenceManager.readInt("cookies"));
+        mPlayer.setQuestionsAnswered(preferenceManager.readInt("questionAnswered"));
+        mPlayer.setCupcakes(preferenceManager.readInt("cupcakes"));
+
+        String answeredQuestions = preferenceManager.readString("answeredQuestions");
+        answeredQuestionsList = new HashSet<>(Arrays.asList(answeredQuestions.split(",")));
     }
 
     public String getPlayerName() {
@@ -83,23 +113,10 @@ public class GameLogic {
     public int getPlayerCookies() { return mPlayer.getCookies(); }
     public int getPlayerCupcakes() { return mPlayer.getCupcakes(); }
 
-    public void start() {
-        System.out.println("Game started.");
-        mQuestionDatabase.generateQuestions();
-        nextQuestion();
-    }
 
-    public void nextQuestion() {
-        if (answeredQuestionsList.size() == mQuestionDatabase.getSize()) {
-            listener.ended();
-        } else {
-            currentQuestion = mQuestionDatabase.getNextQuestion();
-            if (questionAnswered(currentQuestion)) {
-                nextQuestion();
-            }
-        }
+    public String getQuestion() {
+        return currentQuestion.getQuestion();
     }
-
     public String getQuestionType() {
         return currentQuestion.getQuestionType();
     }
@@ -113,10 +130,6 @@ public class GameLogic {
             choicesList = ((DeviceMotionQuestion) currentQuestion).getChoicesList();
         }
         return choicesList;
-    }
-
-    public String getQuestion() {
-        return currentQuestion.getQuestion();
     }
 
     public boolean checkMultipleChoicesAnswer(List<Integer> input) {
@@ -149,29 +162,39 @@ public class GameLogic {
         return answered;
     }
 
-    public void process() {
+    private void process() {
         storeAnsweredQuestion();
         mPlayer.answeredOneQuestion();
-        mPlayer.addCookie();
-        if (mPlayer.getQuestionsAnswered() == 3) {
-            levelUpPlayer();
-        }
+        mPlayer.setCookies(mPlayer.getCookies() + COOKIE_TO_ADD);
         updateSharedPreferences();
     }
 
-    public void levelUpPlayer() {
-        mPlayer.levelUp();
-        mPlayer.addCupcake();
-        mPlayer.setTitle(mTitleList[mPlayer.getLevel()]);
+    public boolean canProceed() {
+        boolean canProceed = false;
+        if (answeredQuestionsList.size() < mQuestionDatabase.getSize()) {
+            if (mPlayer.getQuestionsAnswered() < TO_LEVEL_UP) {
+                canProceed = true;
+            } else {
+                levelUpPlayer();
+            }
+        } else {
+            listener.ended();
+        }
+        return canProceed;
+    }
 
-        if (mPlayer.getLevel() == 10) {
+    private void levelUpPlayer() {
+        mPlayer.levelUp();
+        mPlayer.setCupcakes(mPlayer.getCupcakes() + CUPCAKE_TO_ADD);
+        mPlayer.setTitle(mTitleList[mPlayer.getLevel()]);
+        mPlayer.setQuestionsAnswered(0);
+        updateSharedPreferences();
+
+        if (mPlayer.getLevel() == WIN_LEVEL) {
             listener.ended();
         } else {
             listener.leveledUp();
         }
-
-        mPlayer.setQuestionsAnswered(0);
-        updateSharedPreferences();
     }
 
     public boolean canGetHint() {
@@ -179,7 +202,7 @@ public class GameLogic {
     }
 
     public String getQuestionHint() {
-        mPlayer.useCookie();
+        mPlayer.setCookies(mPlayer.getCookies() - COOKIE_TO_USE);
         updateSharedPreferences();
         return currentQuestion.getHint();
     }
@@ -189,30 +212,21 @@ public class GameLogic {
     }
 
     public void skipQuestion() {
-        mPlayer.useCupcake();
+        mPlayer.setCupcakes(mPlayer.getCupcakes() - CUPCAKE_TO_USE);
+        Question skippedQuestion = currentQuestion;
+        mQuestionDatabase.removeCurrentQuestion(currentQuestion);
+        mQuestionDatabase.addQuestion(skippedQuestion); //push the question to the end of the list
         updateSharedPreferences();
-        nextQuestion();
     }
 
-    public void storeAnsweredQuestion() {
+    private void storeAnsweredQuestion() {
         answeredQuestionsList.add(currentQuestion.getId());
-    }
-
-    private boolean questionAnswered(Question currQuestion) {
-        String currentId = currQuestion.getId();
-        boolean answered = false;
-        for (String id : answeredQuestionsList) {
-            if (id.equals(currentId)) {
-                answered = true;
-            }
-        }
-        return answered;
     }
 
     public void reset() {
         preferenceManager.clear();
-        game = null;
         mPlayer.delete();
+        game = null;
     }
 
     private void updateSharedPreferences() {
@@ -224,18 +238,5 @@ public class GameLogic {
         preferenceManager.write("cupcakes", mPlayer.getCupcakes());
         String answeredQuestions = TextUtils.join(",", answeredQuestionsList);
         preferenceManager.write("answeredQuestions", answeredQuestions);
-    }
-
-    public void updateGame() {
-        mPlayer = Player.getPlayer(preferenceManager.readString("playerName"));
-
-        mPlayer.setLevel(preferenceManager.readInt("level"));
-        mPlayer.setTitle(preferenceManager.readString("title"));
-        mPlayer.setCookies(preferenceManager.readInt("cookies"));
-        mPlayer.setQuestionsAnswered(preferenceManager.readInt("questionAnswered"));
-        mPlayer.setCupcakes(preferenceManager.readInt("cupcakes"));
-
-        String answeredQuestions = preferenceManager.readString("answeredQuestions");
-        answeredQuestionsList = new LinkedList<String>(Arrays.asList(answeredQuestions.split(",")));
     }
 }

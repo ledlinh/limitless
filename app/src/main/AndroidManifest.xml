@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.htw.limitless">
 
+    <uses-feature
+        android:name="android.hardware.sensor.gyroscope"
+        android:required="true" />
+
     <application
         android:name=".controller.Game"
         android:allowBackup="true"
@@ -10,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.GameEndedActivity"></activity>
+        <activity android:name=".view.MaintenanceActivity"></activity>
+        <activity android:name=".view.GameEndedActivity" />
         <activity android:name=".view.LevelUpActivity" />
         <activity android:name=".view.GameActivity" />
         <activity android:name=".view.MainActivity">

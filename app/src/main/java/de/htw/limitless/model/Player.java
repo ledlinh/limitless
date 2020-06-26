@@ -65,12 +65,6 @@ public class Player {
         return mCookies;
     }
 
-    public void addCookie() {
-        this.mCookies++;
-    }
-
-    public void useCookie() { this.mCookies--; }
-
     public void setCookies(int cookies) {
         this.mCookies = cookies;
     }
@@ -78,12 +72,6 @@ public class Player {
     public int getCupcakes() {
         return mCupcakes;
     }
-
-    public void addCupcake() {
-        this.mCupcakes++;
-    }
-
-    public void useCupcake() { this.mCupcakes--; }
 
     public void setCupcakes(int cupcakes) {
         this.mCupcakes = cupcakes;

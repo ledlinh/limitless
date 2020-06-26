@@ -2,14 +2,8 @@ package de.htw.limitless.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -66,8 +60,6 @@ public class GameActivity extends AppCompatActivity implements MotionDetector.Ch
         game = GameLogic.getGame();
         game.setAchievementListener(this);
         game.setUpPreviousGame();
-        game.start();
-
         displayNextQuestion();
     }
 
@@ -118,6 +110,8 @@ public class GameActivity extends AppCompatActivity implements MotionDetector.Ch
             case "input":
                 displayInputQuestion();
                 solveInputQuestion();
+                break;
+            default:
                 break;
         }
     }
@@ -170,7 +164,9 @@ public class GameActivity extends AppCompatActivity implements MotionDetector.Ch
 
                     if (game.checkMultipleChoicesAnswer(inputIndices)) {
                         mSuccessToast.show();
-                        displayNextQuestion();
+                        if (game.canProceed()) {
+                            displayNextQuestion();
+                        }
                     } else {
                         mWrongToast.show();
                     }
@@ -226,7 +222,7 @@ public class GameActivity extends AppCompatActivity implements MotionDetector.Ch
         });
     }
 
-    //   Detect changes from the motion sensor
+    //Detect changes from the motion sensor
     @Override
     public void onChanged(String motion) {
         solveMotionQuestion(motion);
@@ -237,7 +233,9 @@ public class GameActivity extends AppCompatActivity implements MotionDetector.Ch
             mInputChoicesList.setText(motion);
             motionDetector.detectPaused();
             mSuccessToast.show();
-            displayNextQuestion();
+            if (game.canProceed()) {
+                displayNextQuestion();
+            }
         }
     }
 
@@ -254,7 +252,9 @@ public class GameActivity extends AppCompatActivity implements MotionDetector.Ch
             public void onClick(View v) {
                 if (game.checkStringAnswer(mAnswerInput.getText().toString())) {
                     mSuccessToast.show();
-                    displayNextQuestion();
+                    if (game.canProceed()) {
+                        displayNextQuestion();
+                    }
                 } else {
                     mWrongToast.show();
                 }
