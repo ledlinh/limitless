@@ -5,9 +5,9 @@ import android.content.SharedPreferences;
 
 public final class PreferenceManager {
 
+    private static Context appContext;
     private static PreferenceManager instance;
     private static SharedPreferences sharedPreferences;
-    private static Context appContext;
     private SharedPreferences.Editor sharedPreferencesEditor;
 
     private PreferenceManager() {

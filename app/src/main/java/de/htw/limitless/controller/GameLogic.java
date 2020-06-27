@@ -1,5 +1,6 @@
 package de.htw.limitless.controller;
 
+import android.os.UserManager;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
@@ -8,12 +9,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import de.htw.limitless.R;
 import de.htw.limitless.model.DeviceMotionQuestion;
 import de.htw.limitless.model.InputQuestion;
 import de.htw.limitless.model.MultipleChoicesQuestion;
 import de.htw.limitless.model.Player;
 import de.htw.limitless.model.Question;
-import de.htw.limitless.model.QuestionDatabase;
 
 public class GameLogic {
 
@@ -57,14 +58,19 @@ public class GameLogic {
     }
 
     public void setUpNewGame(String playerName) {
-        preferenceManager.write("started", true);
-        mPlayer = Player.getPlayer(playerName);
-        mPlayer.setTitle(mTitleList[mPlayer.getLevel()]);
-        answeredQuestionsList = new HashSet<>();
-        updateSharedPreferences();
+        if (canStart()) {
+            preferenceManager.write("started", true);
+            mPlayer = Player.getPlayer(playerName);
+            mPlayer.setTitle(mTitleList[mPlayer.getLevel()]);
+            answeredQuestionsList = new HashSet<>();
+            updateSharedPreferences();
+        } else {
+            throw new RuntimeException("Not enough question in the database");
+        }
+
     }
 
-    public boolean canStart() {
+    private boolean canStart() {
         int questionsSize = mQuestionDatabase.getSize();
         int requirement = ((WIN_LEVEL + 1) * TO_LEVEL_UP) + ((WIN_LEVEL + 1) * CUPCAKE_TO_USE);
         if (questionsSize < requirement) return false;
@@ -87,9 +93,13 @@ public class GameLogic {
     }
 
     public void setUpPreviousGame() {
-        String playerName = preferenceManager.readString("playerName");
-        mPlayer = Player.getPlayer(playerName);
-        updateGame();
+        if (canStart()) {
+            String playerName = preferenceManager.readString("playerName");
+            mPlayer = Player.getPlayer(playerName);
+            updateGame();
+        } else {
+            throw new RuntimeException("Not enough questions in the database");
+        }
     }
 
     private void updateGame() {
@@ -170,17 +180,21 @@ public class GameLogic {
     }
 
     public boolean canProceed() {
-        boolean canProceed = false;
-        if (answeredQuestionsList.size() < mQuestionDatabase.getSize()) {
-            if (mPlayer.getQuestionsAnswered() < TO_LEVEL_UP) {
-                canProceed = true;
+        if (listener != null) {
+            if (answeredQuestionsList.size() < mQuestionDatabase.getSize()) {
+                if (mPlayer.getQuestionsAnswered() < TO_LEVEL_UP) {
+                    return true;
+                } else {
+                    levelUpPlayer();
+                    return false;
+                }
             } else {
-                levelUpPlayer();
+                listener.ended();
+                return false;
             }
         } else {
-            listener.ended();
+            throw new RuntimeException("No listener for GameLogic");
         }
-        return canProceed;
     }
 
     private void levelUpPlayer() {

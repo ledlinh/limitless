@@ -1,16 +1,12 @@
-package de.htw.limitless;
-
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.List;
 
 import de.htw.limitless.model.DeviceMotionQuestion;
 import de.htw.limitless.model.InputQuestion;
 import de.htw.limitless.model.MultipleChoicesQuestion;
 import de.htw.limitless.model.Question;
-import de.htw.limitless.model.QuestionDatabase;
 
 /**
  * Example local unit test, which will execute on the development machine (host).

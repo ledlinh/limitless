@@ -1,19 +1,10 @@
 package de.htw.limitless.controller;
 
-import android.app.Activity;
-import android.app.Application;
-import android.app.Service;
 import android.content.Context;
-import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Handler;
-import android.os.IBinder;
-import android.util.Log;
-
-import androidx.annotation.Nullable;
 
 public class MotionDetector implements SensorEventListener {
 
@@ -63,7 +54,7 @@ public class MotionDetector implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.values == null || listener == null) {
-            return;
+            throw new RuntimeException("No listener for MotionDetector");
         } else {
             if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
                 mGyroscopeData = event.values.clone();

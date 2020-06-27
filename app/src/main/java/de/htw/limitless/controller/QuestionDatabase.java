@@ -1,9 +1,14 @@
-package de.htw.limitless.model;
+package de.htw.limitless.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import de.htw.limitless.model.DeviceMotionQuestion;
+import de.htw.limitless.model.InputQuestion;
+import de.htw.limitless.model.MultipleChoicesQuestion;
+import de.htw.limitless.model.Question;
 
 public class QuestionDatabase {
     private List<Question> mQuestionList = new ArrayList<>();

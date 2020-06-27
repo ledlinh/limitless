@@ -14,7 +14,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.MaintenanceActivity"></activity>
         <activity android:name=".view.GameEndedActivity" />
         <activity android:name=".view.LevelUpActivity" />
         <activity android:name=".view.GameActivity" />
